@@ -1,7 +1,15 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("./connect");
+const bcrypt = require("bcryptjs");
 
 const users = sequelize().define("users", {
+  id:{
+    primaryKey: true,
+    unique: true,
+    allowNull: false,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+  },
   username: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -20,24 +28,28 @@ const users = sequelize().define("users", {
   },
   password: {
     type: DataTypes.STRING(64),
-    validate: {
-      is: /^[0-9a-f]{64}$/i,
-    },
     min: 8
   },
   avatar: DataTypes.STRING,
-  role: {
-    type: DataTypes.STRING,
-    isIn: [['admin', 'basic']]
+  is_admin: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    allowNull: false,
   },
   created_at: {
     type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
+    defaultValue: DataTypes.NOW
   },
   updated_at: {
     type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
+    defaultValue: DataTypes.NOW
   }
 });
+
+users.beforeCreate(async (user, options) => {
+  user.password = await bcrypt.hash(user.password, 8);
+});
+
+
 
 module.exports = users;

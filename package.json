@@ -4,7 +4,8 @@
   "description": "Evaluation quiz app",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate": "npx sequelize-cli db:migrate"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,14 @@
   "dependencies": {
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "fs": "^0.0.1-security",
     "nodemon": "^2.0.20",
-    "pg": "^8.8.0"
+    "path": "^0.12.7",
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.25.3"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.5.2"
   }
 }

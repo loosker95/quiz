@@ -19,7 +19,7 @@ module.exports = {
         try {
             const data = await User.findAll({});
             if (Object.keys(data).length !== 0) {
-                res.json({ statusCode: 200, message: "All users", data: { users: data } })
+                res.json({ statusCode: 200, data: { users: data } })
             } else {
                 res.json({ statusCode: 200, message: "Empty...No Data available!" })
             }

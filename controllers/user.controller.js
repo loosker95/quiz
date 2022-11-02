@@ -45,7 +45,7 @@ module.exports = {
         const updateUsr = { username, fullname, email, password, avatar, updated_at: new Date()}
         try {
             await User.update(updateUsr, { where: { id: req.params.id } })
-            res.json({ statusCode: 200, message: "User successfully update" })
+            res.json({ statusCode: 200, message: "User successfully updated" })
         } catch (error) {
             res.json({ Error: error.message })
         }

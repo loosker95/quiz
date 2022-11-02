@@ -1,11 +1,11 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("./connect");
 const bcrypt = require("bcryptjs");
+const Result = require("./result.model");
 
-const users = sequelize().define("users", {
+const User = sequelize().define("users", {
   id:{
     primaryKey: true,
-    unique: true,
     allowNull: false,
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -46,10 +46,12 @@ const users = sequelize().define("users", {
   }
 });
 
-users.beforeCreate(async (user, options) => {
+User.hasMany(Result, {foreignKey: 'user_id', targetKey: 'id'})
+
+User.beforeCreate(async (user, options) => {
   user.password = await bcrypt.hash(user.password, 8);
 });
 
 
 
-module.exports = users;
+module.exports = User;

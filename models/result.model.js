@@ -1,17 +1,17 @@
 const { DataTypes } = require("sequelize");
-const Answer = require("./answer.model");
 const sequelize = require("./connect");
-const Result = require("./result.model");
 
-const Question = sequelize().define("questions", {
+const Result = sequelize().define("results", {
   id:{
     primaryKey: true,
     allowNull: false,
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
   },
-  question: DataTypes.STRING,
-  image: DataTypes.STRING,
+  user_id: DataTypes.UUID,
+  question_id: DataTypes.UUID,
+  answer_selected: DataTypes.STRING,
+  score: DataTypes.STRING,
   created_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
@@ -22,8 +22,6 @@ const Question = sequelize().define("questions", {
   }
 });
 
-Question.hasMany(Answer, { foreignKey: 'question_id', targetKey: 'id'})
-Question.hasMany(Result, { foreignKey: 'question_id', targetKey: 'id'})
 
+module.exports = Result;
 
-module.exports = Question;

@@ -4,7 +4,6 @@ const sequelize = require("./connect");
 const Answer = sequelize().define("answers", {
   id:{
     primaryKey: true,
-    unique: true,
     allowNull: false,
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -22,6 +21,5 @@ const Answer = sequelize().define("answers", {
     defaultValue: DataTypes.NOW
   }
 });
-
 
 module.exports = Answer;

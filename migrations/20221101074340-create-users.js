@@ -6,7 +6,6 @@ module.exports = {
       id: {
         allowNull: false,
         primaryKey: true,
-        unique: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
       },
@@ -15,9 +14,7 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      fullname: {
-        type: Sequelize.STRING,
-      },
+      fullname: Sequelize.STRING,
       email: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -28,19 +25,13 @@ module.exports = {
         allowNull: false,
         len: [2,10]
       },
-      avatar: {
-        type: Sequelize.STRING,
-      },
+      avatar: Sequelize.STRING,
       is_admin: {
         type: Sequelize.BOOLEAN,
-        allowNull: false,
+        allowNull: false
       },
-      created_at: {
-        type: Sequelize.DATE,
-      },
-      updated_at: {
-        type: Sequelize.DATE,
-      },
+      created_at: Sequelize.DATE,
+      updated_at: Sequelize.DATE
     });
   },
   async down(queryInterface, Sequelize) {

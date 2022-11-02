@@ -1,5 +1,6 @@
 const User = require('../models/user.model');
 const { Op } = require("sequelize");
+const bcrypt = require('bcryptjs');
 
 
 module.exports = {
@@ -42,7 +43,8 @@ module.exports = {
 
     updateUser: (async (req, res) => {
         const { username, fullname, email, password, avatar } = req.body;
-        const updateUsr = { username, fullname, email, password, avatar, updated_at: new Date()}
+        const hashpass = bcrypt.hashSync(req.body.password, 10);
+        const updateUsr = { username, fullname, email, password: hashpass, avatar, updated_at: new Date()}
         try {
             await User.update(updateUsr, { where: { id: req.params.id } })
             res.json({ statusCode: 200, message: "User successfully updated" })
@@ -66,9 +68,9 @@ module.exports = {
 
     loginUser: (async (req, res) => {
         try {
-            const data = await User.findOne({ where: { [Op.and]: [{ username: req.body.username }, { password: req.body.password }] } })
-            if(data){
-                res.json({ statusCode: 200, data: { users: data } })
+            const data = await User.count({ where: { [Op.and]: [{ email: req.body.email }, { password: req.body.password }] } })
+            if(data == 1){
+                res.json({message: 'User exists'})
             }else{
                res.json({ statusCode: 400, error : "Email or password is incorrect"})
             }
@@ -77,7 +79,19 @@ module.exports = {
         }
     }),
 
-    registerUser: ((req, res) => {
-        res.json({ message: "register" })
+    registerUser: ( async(req, res) => {
+        const { username, fullname, email, password } = req.body;
+        const newUser = { username, fullname, email, password }
+        try {
+            const checkEmail = await User.count({where: {email: req.body.email}})
+            if(checkEmail !== 1){
+                const data = await User.create(newUser);
+                res.json({ statusCode: 200, message: "User successfully added", data: { users: data } })
+            }else{
+                res.json({message: "Email already exists"})
+            }
+        } catch (error) {
+            res.json({ Error: error.message })
+        }
     })
 }

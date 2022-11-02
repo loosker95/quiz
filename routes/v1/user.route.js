@@ -42,5 +42,7 @@ router.get('/answers/:id', answerController.findAnswer);
 router.patch('/answers/:id', answerController.updateAnswer);
 router.delete('/answers/:id', answerController.deleteAnswer);
 
+// router.get('/response/:id', answerController.deleteAnswer);
+
 
 module.exports = router

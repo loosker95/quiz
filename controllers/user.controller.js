@@ -1,6 +1,5 @@
 const User = require('../models/user.model');
 const { Op } = require("sequelize");
-const bcrypt = require("bcryptjs");
 
 
 module.exports = {
@@ -43,7 +42,7 @@ module.exports = {
 
     updateUser: (async (req, res) => {
         const { username, fullname, email, password, avatar } = req.body;
-        const updateUsr = { username, fullname, email, password, avatar }
+        const updateUsr = { username, fullname, email, password, avatar, updated_at: new Date()}
         try {
             await User.update(updateUsr, { where: { id: req.params.id } })
             res.json({ statusCode: 200, message: "User successfully update" })

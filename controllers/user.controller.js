@@ -6,8 +6,7 @@ const bcrypt = require('bcryptjs');
 module.exports = {
     addUser: (async (req, res) => {
         const { username, fullname, email, password } = req.body;
-        const hashpass = await bcrypt.hashSync(req.body.password, 10);
-        const newUser = { username, fullname, email, password: hashpass }
+        const newUser = { username, fullname, email, password }
         try {
             const data = await User.create(newUser);
             res.json({ statusCode: 200, message: "User successfully added", data: { users: data } })
@@ -44,7 +43,7 @@ module.exports = {
 
     updateUser: (async (req, res) => {
         const { username, fullname, email, password, avatar } = req.body;
-        const hashpass = await bcrypt.hashSync(req.body.password, 10);
+        const hashpass = await bcrypt.hash(req.body.password, 8);
         const updateUsr = { username, fullname, email, password: hashpass, avatar, updated_at: new Date()}
         try {
             await User.update(updateUsr, { where: { id: req.params.id } })

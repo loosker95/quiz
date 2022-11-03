@@ -42,7 +42,7 @@ module.exports = {
     }),
 
     updateUser: (async (req, res) => {
-        const { username, fullname, email, password, avatar } = req.body;
+        const { username, fullname, email, avatar } = req.body;
         const hashpass = await bcrypt.hash(req.body.password, 8);
         const updateUsr = { username, fullname, email, password: hashpass, avatar, updated_at: new Date()}
         try {

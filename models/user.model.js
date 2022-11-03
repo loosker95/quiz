@@ -2,6 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("./connect");
 const bcrypt = require("bcryptjs");
 const Result = require("./result.model");
+const Token = require("./token.model");
 
 const User = sequelize().define("users", {
   id:{
@@ -47,6 +48,7 @@ const User = sequelize().define("users", {
 });
 
 User.hasMany(Result, {foreignKey: 'user_id', targetKey: 'id'})
+User.hasMany(Token, {foreignKey: 'user_id', targetKey: 'id'})
 
 User.beforeCreate(async (user, options) => {
   user.password = await bcrypt.hash(user.password, 8);

@@ -4,6 +4,7 @@ const userController = require('../../controllers/user.controller')
 const resultController = require('../../controllers/result.controller')
 const questionController = require('../../controllers/question.controller')
 const answerController = require('../../controllers/answer.controller')
+const userToken = require('../../controllers/token.contoller')
 
 
 // Users
@@ -42,7 +43,13 @@ router.get('/answers/:id', answerController.findAnswer);
 router.patch('/answers/:id', answerController.updateAnswer);
 router.delete('/answers/:id', answerController.deleteAnswer);
 
-// router.get('/response/:id', answerController.deleteAnswer);
+router.post('/response', answerController.submitAnswer);
+
+// Token
+router.post('/tokens', userToken.addToken);
+
+
+
 
 
 module.exports = router

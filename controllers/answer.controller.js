@@ -8,7 +8,7 @@ module.exports = {
         const newAnswer = { answers, question_id, is_correct, image }
         try {
             const data = await Answer.create(newAnswer);
-            res.json({ statusCode: 200, message: "Answer successfully added", data: { answers: data } })
+            res.json({ statusCode: 200, message: "Answer added successfully", data: { answers: data } })
         } catch (error) {
             res.json({ Error: error.message })
         }
@@ -45,7 +45,7 @@ module.exports = {
         const updateAns = { answers, is_correct, image, updated_at: new Date()}
         try {
             await Answer.update(updateAns, { where: { id: req.params.id } })
-            res.json({ statusCode: 200, message: "Answer successfully updated" })
+            res.json({ statusCode: 200, message: "Answer updated successfully" })
         } catch (error) {
             res.json({ Error: error.message })
         }
@@ -55,10 +55,21 @@ module.exports = {
         try {
             const data = await Answer.destroy({ where: { id: req.params.id } })
             if (data) {
-                res.json({ statusCode: 200, message: 'Answer successfully deleted' })
+                res.json({ statusCode: 200, message: 'Answer deleted successfully' })
             } else {
                 res.json({ statusCode: 200, message: 'Answer doesn\'t exist' })
             }
+        } catch (error) {
+            res.json({ Error: error.message })
+        }
+    }),
+
+    submitAnswer: ( async(req, res) =>{
+        const { answers, question_id, is_correct, image } = req.body;
+        const sunmiyAnswr = { answers, question_id, is_correct, image }
+        try {
+            const data = await Answer.create(sunmiyAnswr);
+            res.json({ statusCode: 200, message: "Answer Submitted successfully", data: { answers: data } })
         } catch (error) {
             res.json({ Error: error.message })
         }

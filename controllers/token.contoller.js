@@ -1,7 +1,7 @@
 const Token = require('../models/token.model')
 
 module.exports = {
-    addToken: ( async(req, res) =>{
+    refreshToken: ( async(req, res) =>{
         const { user_id, token, refresh_token} = req.body;
         const date = new Date();
         const newToken = {  user_id, token, refresh_token, expiration_date: date, created_at: date, updated_at: date }

@@ -1,22 +1,20 @@
 const User = require('../models/user.model');
 const { Op } = require("sequelize");
 const bcrypt = require('bcryptjs');
-const {addUserValidate} = require('../validations/user.validation')
-const loginValidate = require('../validations/login.validation')
+const {validationResult } = require('express-validator')
 
 
 module.exports = {
     addUser: (async (req, res) => {
-        const { error, value } = addUserValidate.validate(req.body, { abortEarly: false })
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array()});
+        }
         const { username, fullname, email, password } = req.body;
         const newUser = { username, fullname, email, password }
         try {
-            if (!error) {
-                const data = await User.create(newUser);
-                res.json({ statusCode: 200, message: "User successfully added", data: { users: data } })
-            } else {
-                res.json({ statusCode: 401, Error: error.message })
-            }
+            const data = await User.create(newUser);
+            res.json({ statusCode: 200, message: "User successfully added", data: { users: data } })
         } catch (error) {
             res.json({ Error: error.message })
         }
@@ -74,22 +72,17 @@ module.exports = {
     }),
 
     loginUser: (async (req, res) => {
-        const { error, value } = loginValidate.validate(req.body, { abortEarly: false })
         try {
-            if (!error) {
-                const data = await User.findOne({ where: { email: req.body.email } })
-                if (data) {
-                    const validPassword = await bcrypt.compare(req.body.password, data.password);
-                    if (validPassword) {
-                        res.json({ message: "User exists..." })
-                    } else {
-                        res.json({ statusCode: 400, message: "Email or password incorect" })
-                    }
+            const data = await User.findOne({ where: { email: req.body.email } })
+            if (data) {
+                const validPassword = await bcrypt.compare(req.body.password, data.password);
+                if (validPassword) {
+                    res.json({ message: "User exists..." })
                 } else {
-                    res.json({ statusCode: 400, message: "User does not exis" })
+                    res.json({ statusCode: 400, message: "Email or password incorect" })
                 }
-            }else{
-                res.json({ statusCode: 401, Error: error.message })
+            } else {
+                res.json({ statusCode: 400, message: "User does not exis" })
             }
         } catch (error) {
             res.json({ Error: error.message })
@@ -97,20 +90,15 @@ module.exports = {
     }),
 
     registerUser: (async (req, res) => {
-        const { error, value } = addUserValidate.validate(req.body, { abortEarly: false })
         const { username, fullname, email, password } = req.body;
         const newUser = { username, fullname, email, password }
         try {
-            if(!error){
-                const checkEmail = await User.count({ where: { email: req.body.email } })
-                if (checkEmail !== 1) {
-                    const data = await User.create(newUser);
-                    res.json({ statusCode: 200, message: "User successfully added", data: { users: data } })
-                } else {
-                    res.json({ message: "Email already exists" })
-                }
+            const checkEmail = await User.count({ where: { email: req.body.email } })
+            if (checkEmail !== 1) {
+                const data = await User.create(newUser);
+                res.json({ statusCode: 200, message: "User successfully added", data: { users: data } })
             } else {
-                res.json({ statusCode: 401, Error: error.message })
+                res.json({ message: "Email already exists" })
             }
         } catch (error) {
             res.json({ Error: error.message })

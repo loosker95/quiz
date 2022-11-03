@@ -1,15 +1,22 @@
 const User = require('../models/user.model');
 const { Op } = require("sequelize");
 const bcrypt = require('bcryptjs');
+const {addUserValidate} = require('../validations/user.validation')
+const loginValidate = require('../validations/login.validation')
 
 
 module.exports = {
     addUser: (async (req, res) => {
+        const { error, value } = addUserValidate.validate(req.body, { abortEarly: false })
         const { username, fullname, email, password } = req.body;
         const newUser = { username, fullname, email, password }
         try {
-            const data = await User.create(newUser);
-            res.json({ statusCode: 200, message: "User successfully added", data: { users: data } })
+            if (!error) {
+                const data = await User.create(newUser);
+                res.json({ statusCode: 200, message: "User successfully added", data: { users: data } })
+            } else {
+                res.json({ statusCode: 401, Error: error.message })
+            }
         } catch (error) {
             res.json({ Error: error.message })
         }
@@ -44,7 +51,7 @@ module.exports = {
     updateUser: (async (req, res) => {
         const { username, fullname, email, avatar } = req.body;
         const hashpass = await bcrypt.hash(req.body.password, 8);
-        const updateUsr = { username, fullname, email, password: hashpass, avatar, updated_at: new Date()}
+        const updateUsr = { username, fullname, email, password: hashpass, avatar, updated_at: new Date() }
         try {
             await User.update(updateUsr, { where: { id: req.params.id } })
             res.json({ statusCode: 200, message: "User successfully updated" })
@@ -67,33 +74,43 @@ module.exports = {
     }),
 
     loginUser: (async (req, res) => {
+        const { error, value } = loginValidate.validate(req.body, { abortEarly: false })
         try {
-            const data = await User.findOne({ where: { email: req.body.email }})
-            if(data){
-                const validPassword = await bcrypt.compare(req.body.password, data.password);
-                if(validPassword){
-                    res.json({message: "User exists..."})
-                }else{
-                    res.json({ statusCode: 400, message : "Email or password incorect"})
+            if (!error) {
+                const data = await User.findOne({ where: { email: req.body.email } })
+                if (data) {
+                    const validPassword = await bcrypt.compare(req.body.password, data.password);
+                    if (validPassword) {
+                        res.json({ message: "User exists..." })
+                    } else {
+                        res.json({ statusCode: 400, message: "Email or password incorect" })
+                    }
+                } else {
+                    res.json({ statusCode: 400, message: "User does not exis" })
                 }
             }else{
-               res.json({ statusCode: 400, message : "User does not exis"})
+                res.json({ statusCode: 401, Error: error.message })
             }
         } catch (error) {
             res.json({ Error: error.message })
         }
     }),
 
-    registerUser: ( async(req, res) => {
+    registerUser: (async (req, res) => {
+        const { error, value } = addUserValidate.validate(req.body, { abortEarly: false })
         const { username, fullname, email, password } = req.body;
         const newUser = { username, fullname, email, password }
         try {
-            const checkEmail = await User.count({where: {email: req.body.email}})
-            if(checkEmail !== 1){
-                const data = await User.create(newUser);
-                res.json({ statusCode: 200, message: "User successfully added", data: { users: data } })
-            }else{
-                res.json({message: "Email already exists"})
+            if(!error){
+                const checkEmail = await User.count({ where: { email: req.body.email } })
+                if (checkEmail !== 1) {
+                    const data = await User.create(newUser);
+                    res.json({ statusCode: 200, message: "User successfully added", data: { users: data } })
+                } else {
+                    res.json({ message: "Email already exists" })
+                }
+            } else {
+                res.json({ statusCode: 401, Error: error.message })
             }
         } catch (error) {
             res.json({ Error: error.message })

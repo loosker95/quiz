@@ -6,7 +6,8 @@ const bcrypt = require('bcryptjs');
 module.exports = {
     addUser: (async (req, res) => {
         const { username, fullname, email, password } = req.body;
-        const newUser = { username, fullname, email, password }
+        const hashpass = await bcrypt.hashSync(req.body.password, 10);
+        const newUser = { username, fullname, email, password: hashpass }
         try {
             const data = await User.create(newUser);
             res.json({ statusCode: 200, message: "User successfully added", data: { users: data } })
@@ -43,7 +44,7 @@ module.exports = {
 
     updateUser: (async (req, res) => {
         const { username, fullname, email, password, avatar } = req.body;
-        const hashpass = bcrypt.hashSync(req.body.password, 10);
+        const hashpass = await bcrypt.hashSync(req.body.password, 10);
         const updateUsr = { username, fullname, email, password: hashpass, avatar, updated_at: new Date()}
         try {
             await User.update(updateUsr, { where: { id: req.params.id } })
@@ -68,11 +69,16 @@ module.exports = {
 
     loginUser: (async (req, res) => {
         try {
-            const data = await User.count({ where: { [Op.and]: [{ email: req.body.email }, { password: req.body.password }] } })
-            if(data == 1){
-                res.json({message: 'User exists'})
+            const data = await User.findOne({ where: { email: req.body.email }})
+            if(data){
+                const validPassword = await bcrypt.compare(req.body.password, data.password);
+                if(validPassword){
+                    res.json({message: "User exists..."})
+                }else{
+                    res.json({ statusCode: 400, message : "Email or password incorect"})
+                }
             }else{
-               res.json({ statusCode: 400, error : "Email or password is incorrect"})
+               res.json({ statusCode: 400, message : "User does not exis"})
             }
         } catch (error) {
             res.json({ Error: error.message })

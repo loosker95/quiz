@@ -48,10 +48,5 @@ const User = sequelize().define("users", {
 
 User.hasMany(Result, {foreignKey: 'user_id', targetKey: 'id'})
 
-User.beforeCreate(async (user, options) => {
-  user.password = await bcrypt.hash(user.password, 8);
-});
-
-
 
 module.exports = User;

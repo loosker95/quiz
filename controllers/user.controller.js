@@ -23,7 +23,7 @@ module.exports = {
         res.send(response(httpStatus.OK, 'Get user successfully', data));
     }),
 
-    updateUser: (async (req, res) => {
+    updateUser: catchAsync(async (req, res) => {
         const data = await userService.updateUserByPk(req.params.id, req.body)
         res.send(response(httpStatus.OK, 'User updated successfully', data));
     }),

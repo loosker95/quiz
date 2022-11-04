@@ -1,79 +1,39 @@
 const Result = require('../models/result.model');
+const httpStatus = require('http-status');
+const response = require('../utils/templateResponse')
+const catchAsync = require('../utils/catchAsync')
+const { resultService } = require('../services')
 
 module.exports = {
 
-    addResult: ( async (req, res) =>{
-        const { user_id, question_id, answer_selected, score } = req.body;
-        const newResult = { user_id, question_id, answer_selected, score }
-        try {
-            const data = await Result.create(newResult);
-            res.json({ statusCode: 200, message: "Result successfully added", data: { results: data } })
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    addResult: catchAsync(async (req, res) => {
+        const data = await resultService.createResult(req.body)
+        res.send(response(httpStatus.CREATED, 'Result added successfully', data));
     }),
 
-    getAllResult: ( async(req, res) =>{
-        try {
-            const data = await Result.findAll({});
-            if (Object.keys(data).length !== 0) {
-                res.json({ statusCode: 200, data: { results: data } })
-            } else {
-                res.json({ statusCode: 200, message: "Empty...No Data available!" })
-            }
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    getAllResult: catchAsync(async (req, res) => {
+        const data = await resultService.getAllResult()
+        res.send(response(httpStatus.OK, 'Get all results', data));
     }),
 
-    findResult: (async (req, res) =>{
-        try {
-            const data = await Result.findOne({ where: { id: req.params.id } })
-            if (data) {
-                res.json({ statusCode: 200, data: { results: data } })
-            } else {
-                res.json({ statusCode: 200, message: 'Result doesn\'t exist' })
-            }
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    findResult: catchAsync(async (req, res) => {
+        const data = await resultService.getResultByPk(req.params.id)
+        res.send(response(httpStatus.OK, 'Get result', data));
     }),
 
-    updateResult: ( async(req, res) =>{
-        const { user_id, question_id, answer_selected, score } = req.body;
-        const updateRlt = { user_id, question_id, answer_selected, score, updated_at: new Date()}
-        try {
-            await Result.update(updateRlt, { where: { id: req.params.id } })
-            res.json({ statusCode: 200, message: "Result successfully updated" })
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    updateResult: catchAsync(async (req, res) => {
+        const data = await resultService.updateResultByPk(req.params.id, req.body)
+        res.send(response(httpStatus.OK, 'Result updated successfully', data));
     }),
 
-    deleteResult: ( async(req, res) =>{
-        try {
-            const data = await Result.destroy({ where: { id: req.params.id } })
-            if (data) {
-                res.json({ statusCode: 200, message: 'Result successfully deleted' })
-            } else {
-                res.json({ statusCode: 200, message: 'Result doesn\'t exist' })
-            }
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    deleteResult: catchAsync(async (req, res) => {
+        await resultService.deleteResultByPk(req.params.id)
+        res.send(response(httpStatus.ACCEPTED, 'Result deleted successfully'));
     }),
 
-    viewResult: ( async(req, res) =>{
-        try {
-            const data = await Result.findOne({ where: { user_id: req.params.id } });
-            if (Object.keys(data).length !== 0) {
-                res.json({ statusCode: 200, data: { results: data } })
-            } else {
-                res.json({ statusCode: 200, message: "Empty...No Data available!" })
-            }
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    viewResult: (async (req, res) => {
+        const data = await resultService.viewResult(req.params.id)
+        res.send(response(httpStatus.OK, 'Get results', data));
     })
 
 }

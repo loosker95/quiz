@@ -22,6 +22,9 @@ const Result = sequelize().define("results", {
   }
 });
 
+Result.beforeUpdate(async (result, options) => {
+  result.updated_at = new Date();
+});
 
 module.exports = Result;
 

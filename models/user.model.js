@@ -61,6 +61,7 @@ User.beforeUpdate(async (user, options) => {
   if (user.changed("email")) {
     user.email = false;
   }
+    user.updated_at = new Date();
 });
 
 User.isEmailTaken = async (_email) => {

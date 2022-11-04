@@ -1,75 +1,38 @@
 const User = require('../models/user.model');
-const { Op } = require("sequelize");
 const bcrypt = require('bcryptjs');
-const {validationResult } = require('express-validator')
+const httpStatus = require('http-status');
+const response = require('../utils/templateResponse')
+const catchAsync = require('../utils/catchAsync')
+const { userService } = require('../services')
+
 
 
 module.exports = {
-    addUser: (async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array()});
-        }
-        const { username, fullname, email, password } = req.body;
-        const newUser = { username, fullname, email, password }
-        try {
-            const data = await User.create(newUser);
-            res.json({ statusCode: 200, message: "User successfully added", data: { users: data } })
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    addUser: catchAsync(async (req, res) => {
+        const data = await userService.createUser(req.body)
+        res.send(response(httpStatus.CREATED, 'User added successfully', data));
     }),
 
-    getAllUsers: (async (req, res) => {
-        try {
-            const data = await User.findAll({});
-            if (Object.keys(data).length !== 0) {
-                res.json({ statusCode: 200, data: { users: data } })
-            } else {
-                res.json({ statusCode: 200, message: "Empty...No Data available!" })
-            }
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    getAllUsers: catchAsync(async (req, res) => {
+        const data = await userService.getAllUsers()
+        res.send(response(httpStatus.OK, 'Get all users', data));
     }),
 
-    findUser: (async (req, res) => {
-        try {
-            const data = await User.findOne({ where: { id: req.params.id } })
-            if (data) {
-                res.json({ statusCode: 200, data: { users: data } })
-            } else {
-                res.json({ statusCode: 200, message: 'User doesn\'t exist' })
-            }
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    findUser: catchAsync(async (req, res) => {
+        const data = await userService.getUserByPk(req.params.id)
+        res.send(response(httpStatus.OK, 'Get user successfully', data));
     }),
 
     updateUser: (async (req, res) => {
-        const { username, fullname, email, avatar } = req.body;
-        const hashpass = await bcrypt.hash(req.body.password, 8);
-        const updateUsr = { username, fullname, email, password: hashpass, avatar, updated_at: new Date() }
-        try {
-            await User.update(updateUsr, { where: { id: req.params.id } })
-            res.json({ statusCode: 200, message: "User successfully updated" })
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+        const data = await userService.updateUserByPk(req.params.id, req.body)
+        res.send(response(httpStatus.OK, 'User updated successfully', data));
     }),
 
-    deleteUser: (async (req, res) => {
-        try {
-            const data = await User.destroy({ where: { id: req.params.id } })
-            if (data) {
-                res.json({ statusCode: 200, message: 'User successfully deleted' })
-            } else {
-                res.json({ statusCode: 200, message: 'User doesn\'t exist' })
-            }
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    deleteUser: catchAsync(async (req, res) => {
+        userService.deleteUserByPk(req.params.id)
+        res.send(response(httpStatus.ACCEPTED, 'User deleted successfully'));
     }),
+
 
     loginUser: (async (req, res) => {
         try {

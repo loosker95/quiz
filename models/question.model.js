@@ -25,5 +25,8 @@ const Question = sequelize().define("questions", {
 Question.hasMany(Answer, { foreignKey: 'question_id', targetKey: 'id'})
 Question.hasMany(Result, { foreignKey: 'question_id', targetKey: 'id'})
 
+Question.beforeUpdate(async (question, options) => {
+  question.updated_at = new Date();
+});
 
 module.exports = Question;

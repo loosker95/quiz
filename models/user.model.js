@@ -54,6 +54,19 @@ User.beforeCreate(async (user, options) => {
   user.password = await bcrypt.hash(user.password, 8);
 });
 
+User.beforeUpdate(async (user, options) => {
+  if (user.changed("password")) {
+    user.password = await bcrypt.hash(user.password, 8);
+  }
+  if (user.changed("email")) {
+    user.email = false;
+  }
+});
+
+User.isEmailTaken = async (_email) => {
+  const users = await User.findOne({ where: { email: _email } });
+  return !!users;
+};
 
 
 module.exports = User;

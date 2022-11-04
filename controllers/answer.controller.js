@@ -1,78 +1,39 @@
-const Answer = require('../models/answer.model');
+const httpStatus = require('http-status');
+const response = require('../utils/templateResponse')
+const catchAsync = require('../utils/catchAsync')
+const { answerService } = require('../services')
 
 
 module.exports = {
 
-    addAnswer: ( async(req, res) =>{
-        const { answers, question_id, is_correct, image } = req.body;
-        const newAnswer = { answers, question_id, is_correct, image }
-        try {
-            const data = await Answer.create(newAnswer);
-            res.json({ statusCode: 200, message: "Answer added successfully", data: { answers: data } })
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    addAnswer: catchAsync(async (req, res) => {
+        const data = await answerService.createAnswer(req.body)
+        res.send(response(httpStatus.CREATED, 'Answer added successfully', data));
     }),
 
-    getAllAnswers: ( async(req, res) => {
-        try {
-            const data = await Answer.findAll({});
-            if (Object.keys(data).length !== 0) {
-                res.json({ statusCode: 200, data: { answers: data } })
-            } else {
-                res.json({ statusCode: 200, message: "Empty...No Data available!" })
-            }
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    getAllAnswers: catchAsync(async (req, res) => {
+        const data = await answerService.getAllAnswers()
+        res.send(response(httpStatus.OK, 'Get all answers', data));
     }),
 
-    findAnswer: ( async(req, res) =>{
-        try {
-            const data = await Answer.findOne({ where: { id: req.params.id } })
-            if (data) {
-                res.json({ statusCode: 200, data: { answers: data } })
-            } else {
-                res.json({ statusCode: 200, message: 'Answer doesn\'t exist' })
-            }
-        } catch (error) {
-            res.json({ Error: error.message })
-        } 
-    }), 
-
-    updateAnswer: ( async(req, res) =>{
-        const { answers, is_correct, image } = req.body;
-        const updateAns = { answers, is_correct, image, updated_at: new Date()}
-        try {
-            await Answer.update(updateAns, { where: { id: req.params.id } })
-            res.json({ statusCode: 200, message: "Answer updated successfully" })
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    findAnswer: catchAsync(async (req, res) => {
+        const data = await answerService.getAnsersByPk(req.params.id)
+        res.send(response(httpStatus.OK, 'Get answer successfully', data));
     }),
 
-    deleteAnswer: ( async(req, res) =>{
-        try {
-            const data = await Answer.destroy({ where: { id: req.params.id } })
-            if (data) {
-                res.json({ statusCode: 200, message: 'Answer deleted successfully' })
-            } else {
-                res.json({ statusCode: 200, message: 'Answer doesn\'t exist' })
-            }
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    updateAnswer: catchAsync(async (req, res) => {
+        const data = await answerService.updateByPk(req.params.id, req.body)
+        res.send(response(httpStatus.OK, 'Answer updated successfully', data));
     }),
 
-    submitAnswer: ( async(req, res) =>{
-        const { answers, question_id, is_correct, image } = req.body;
-        const sunmiyAnswr = { answers, question_id, is_correct, image }
-        try {
-            const data = await Answer.create(sunmiyAnswr);
-            res.json({ statusCode: 200, message: "Answer Submitted successfully", data: { answers: data } })
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    deleteAnswer: catchAsync(async (req, res) => {
+        await answerService.deleteByPK(req.params.id)
+        res.send(response(httpStatus.ACCEPTED, 'Answer deleted successfully'));
+    }),
+
+    submitAnswer: (async (req, res) => {
+        const data = await answerService.submitAns(req.body)
+        res.send(response(httpStatus.CREATED, 'Answer Submitted successfully', data));
     })
-    
+
 }

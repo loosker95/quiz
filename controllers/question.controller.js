@@ -1,67 +1,34 @@
-const Question =  require('../models/question.model')
-
+const Question = require('../models/question.model')
+const httpStatus = require('http-status');
+const response = require('../utils/templateResponse')
+const catchAsync = require('../utils/catchAsync')
+const { questionService} = require('../services')
 
 module.exports = {
 
-    addQuestion: ( async(req, res) =>{
-        const {question, image} = req.body
-        const newQuestion = {question, image}
-        try{
-            const data = await Question.create(newQuestion)
-            res.json({ statusCode: 200, message: "Question successfully added", data: { questions: data } })
-        }catch (error) {
-            res.json({ Error: error.message })
-        }
+    addQuestion: (async (req, res) => {
+        const data = await questionService.createQuestion(req.body)
+        res.send(response(httpStatus.CREATED, 'Question successfully added', data));
     }),
 
-    allQuestions: ( async(req, res) =>{
-        try{
-            const data = await Question.findAll({})
-            if (Object.keys(data).length !== 0) {
-                res.json({ statusCode: 200, data: { questions: data } })
-            }else{
-                res.json({ statusCode: 200, message: "Empty...No Data available!" })
-            }
-        }catch (error) {
-            res.json({ Error: error.message })
-        }
+    allQuestions: catchAsync(async (req, res) => {
+        const data = await questionService.getAllQuestions()
+        res.send(response(httpStatus.OK, 'Get all questions', data));
     }),
 
-    findQuestion: ( async(req, res) =>{
-        try{
-            const data = await Question.findByPk(req.params.id);
-            if (data) {
-                res.json({ statusCode: 200, data: { questions: data } })
-            } else {
-                res.json({ statusCode: 200, message: 'Question doesn\'t exist' })
-            }
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    findQuestion: (async (req, res) => {
+        const data = await questionService.getQuestionByPk(req.params.id)
+        res.send(response(httpStatus.OK, 'Get question successfully', data));
     }),
 
-    updateQuestion: (async (req, res) =>{
-        const { question, image } = req.body;
-        const updateQus = { question, image, updated_at: new Date()}
-        try {
-            await Question.update(updateQus, { where: { id: req.params.id } })
-            res.json({ statusCode: 200, message: "Question successfully update" })
-        } catch (error) {
-            res.json({ Error: error.message })
-        }
+    updateQuestion: (async (req, res) => {
+        const data = await questionService.updateQuestionByPk(req.params.id, req.body)
+        res.send(response(httpStatus.OK, 'Question updated successfully', data));
     }),
 
-    deleteQuestion: (async (req, res) =>{
-        try {
-            const data = await Question.destroy({ where: { id: req.params.id } })
-            if (data) {
-                res.json({ statusCode: 200, message: 'Question successfully deleted' })
-            } else {
-                res.json({ statusCode: 200, message: 'Question doesn\'t exist' })
-            }
-        } catch (error) {
-            res.json({ Error: error.message })
-        } 
+    deleteQuestion: (async(req, res) =>{ 
+        await questionService.deleteQuestionByPK(req.params.id)
+        res.send(response(httpStatus.ACCEPTED, 'Question deleted successfully'));
     })
 
-}
+}   

@@ -22,4 +22,8 @@ const Answer = sequelize().define("answers", {
   }
 });
 
+Answer.beforeUpdate(async (answer, options) => {
+    answer.updated_at = new Date();
+});
+
 module.exports = Answer;

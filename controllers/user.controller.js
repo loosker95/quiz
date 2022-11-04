@@ -10,6 +10,9 @@ const { userService } = require('../services')
 module.exports = {
     addUser: catchAsync(async (req, res) => {
         const data = await userService.createUser(req.body)
+        if (await User.isEmailTaken(userBody.email)) {
+            throw new ApiError(httpStatus.BAD_REQUEST, 'Email address already is taken!');
+          }
         res.send(response(httpStatus.CREATED, 'User added successfully', data));
     }),
 

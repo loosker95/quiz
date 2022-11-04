@@ -1,16 +1,16 @@
-const {check, validationResult } = require('express-validator')
+const Joi = require('joi')
 
+const createUser = {
+    body: Joi.object().keys({
+      username: Joi.string().alphanum().min(3).max(30).required(),
+      fullname: Joi.string().optional(),
+      email: Joi.string().email().required(),
+      password: Joi.string().alphanum().min(8).required(),
+      avatar: Joi.string().optional(),
+      is_admin: Joi.boolean().required(),
+    }),
+  };
 
-const userValidate = [
-        check('username').notEmpty().withMessage('username is required')
-        .isAlphanumeric().withMessage('username must be Alphanumeric')
-        .isLength({min: 3}).withMessage('username must be at least 3 characters'),
-        check('fullname').isString().optional(),
-        check('email').notEmpty().isEmail(),
-        check('avatar').isString().optional(),
-        check('password').notEmpty().isLength({min: 3})
-    ]
-
-
-
-module.exports = {userValidate};
+  module.exports = {
+    createUser,
+  };  

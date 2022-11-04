@@ -1,5 +1,4 @@
 const express = require('express')
-const app = express()
 const dotenv = require('dotenv')
 const connectDb = require('./models/connect')
 const bodyParser = require('body-parser')
@@ -8,6 +7,10 @@ const questionRoute = require('./routes/v1/question.route')
 const answerRoute = require('./routes/v1/answer.route')
 const resultRoute = require('./routes/v1/result.route')
 
+const { errorConverter, errorHandler} = require('./middlewares/error');
+
+
+const app = express()
 dotenv.config({path: './config.env'})
 port = process.env.PORT || 1010
 
@@ -21,7 +24,15 @@ app.use('/api/v1', userRoute)
 app.use('/api/v1/questions', questionRoute)
 app.use('/api/v1/answers', answerRoute)
 app.use('/api/v1/results', resultRoute)
+app.use((req, res, next) => {
+    next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
+  });
+
+app.use(errorConverter);
+app.use(errorHandler);
 
 app.listen(port, ()=>{
     console.log(`Server is running at http://localhost:${port}/v1`)
 })
+
+

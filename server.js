@@ -6,6 +6,8 @@ const userRoute = require('./routes/v1/user.route')
 const questionRoute = require('./routes/v1/question.route')
 const answerRoute = require('./routes/v1/answer.route')
 const resultRoute = require('./routes/v1/result.route')
+const ApiError = require('./utils/ApiError')
+const httpStatus = require('http-status')
 
 const { errorConverter, errorHandler} = require('./middlewares/error');
 
@@ -26,7 +28,7 @@ app.use('/api/v1/answers', answerRoute)
 app.use('/api/v1/results', resultRoute)
 app.use((req, res, next) => {
     next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
-  });
+});
 
 app.use(errorConverter);
 app.use(errorHandler);

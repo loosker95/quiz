@@ -10,9 +10,6 @@ const { userService } = require('../services')
 module.exports = {
     addUser: catchAsync(async (req, res) => {
         const data = await userService.createUser(req.body)
-        if (await User.isEmailTaken(userBody.email)) {
-            throw new ApiError(httpStatus.BAD_REQUEST, 'Email address already is taken!');
-          }
         res.send(response(httpStatus.CREATED, 'User added successfully', data));
     }),
 
@@ -32,7 +29,7 @@ module.exports = {
     }),
 
     deleteUser: catchAsync(async (req, res) => {
-        userService.deleteUserByPk(req.params.id)
+        await userService.deleteUserByPk(req.params.id)
         res.send(response(httpStatus.ACCEPTED, 'User deleted successfully'));
     }),
 

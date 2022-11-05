@@ -34,6 +34,9 @@ const getUserByPk = (async (id) => {
 
 const updateUserByPk = (async (id, updateBody) => {
     const user = await getUserByPk(id);
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+    }
     updateBody = lowerCaseValue(updateBody, ['username', 'fullname', 'email', 'password']);
     Object.assign(user, updateBody);
     await user.save();

@@ -7,14 +7,14 @@ const userValidation = require('../../validations/user.validation')
 
 
 
-router.post('/users', validate(userValidation.createUserAndRegister), userController.addUser)
+router.post('/users', validate(userValidation.createUser), userController.addUser)
 router.get('/users', userController.getAllUsers)
-router.get('/users/:id', userController.findUser)
+router.get('/users/:id', validate(userValidation.getUser), userController.findUser)
 router.patch('/users/:id', validate(userValidation.updateUser), userController.updateUser)
 router.delete('/users/:id', validate(userValidation.deleteUser),userController.deleteUser)
 
 router.post('/login', validate(userValidation.loginUser), userController.loginUser)
-router.post('/register', validate(userValidation.createUserAndRegister), userController.registerUser)
+router.post('/register', validate(userValidation.createRegister), userController.registerUser)
 
 
 router.post('/tokens', userToken.refreshToken);

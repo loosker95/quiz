@@ -21,6 +21,12 @@ const updateAnswer = {
         })
 }
 
+const getAnswer = {
+      params: Joi.object().keys({
+          id: Joi.string().required(),
+      }),
+  }
+
 const deleteAnswer = {
       params: Joi.object().keys({
           id: Joi.string().required(),
@@ -39,6 +45,7 @@ const deleteAnswer = {
 module.exports = {
       createAnswer,
       updateAnswer,
+      getAnswer,
       deleteAnswer,
       submitAnswer
 };

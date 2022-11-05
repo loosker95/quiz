@@ -7,7 +7,7 @@ const answerValidation = require('../../validations/answer.validation')
 
 router.post('/', validate(answerValidation.createAnswer), answerController.addAnswer);
 router.get('/', answerController.getAllAnswers);
-router.get('/:id', answerController.findAnswer);
+router.get('/:id', validate(answerValidation.getAnswer), answerController.findAnswer);
 router.patch('/:id', validate(answerValidation.updateAnswer), answerController.updateAnswer);
 router.delete('/:id', validate(answerController.deleteAnswer), answerController.deleteAnswer);
 

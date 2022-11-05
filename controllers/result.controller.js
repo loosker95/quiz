@@ -31,7 +31,7 @@ module.exports = {
         res.send(response(httpStatus.ACCEPTED, 'Result deleted successfully'));
     }),
 
-    viewResult: (async (req, res) => {
+    viewResult: catchAsync(async (req, res) => {
         const data = await resultService.viewResult(req.params.id)
         res.send(response(httpStatus.OK, 'Get results', data));
     })

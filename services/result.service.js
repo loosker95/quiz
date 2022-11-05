@@ -26,6 +26,9 @@ const getResultByPk = (async(id) =>{
 
 const updateResultByPk = (async(id, updateBody) =>{
     const result = await getResultByPk(id);
+    if (!result) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Result not found');
+    }
     updateBody = lowerCaseValue(updateBody, ['user_id', 'question_id', 'answer_selected', 'score']);
     Object.assign(result, updateBody);
     await result.save();

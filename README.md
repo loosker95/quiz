@@ -2,5 +2,5 @@
 ### RESTFull api using Node.js, Express.js, Sequelize and Postgres
 	...
 
-### command
+### Details
 	...

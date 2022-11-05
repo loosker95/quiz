@@ -10,15 +10,26 @@ const createQuestion = (async(userBody) =>{
 })
 
 const getAllQuestions = (async() =>{
-    return Question.findAll({})
+    const question = await Question.findAll({})
+    if (!question) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Question not found');
+    }
+    return question
 })
 
 const getQuestionByPk = (async(id) =>{
-    return Question.findByPk(id)
+    const question = await Question.findByPk(id)
+    if (!question) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Question not found');
+    }
+    return question
 })
 
 const updateQuestionByPk = (async(id, updateBody) =>{
     const question = await getQuestionByPk(id);
+    if (!question) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Question not found');
+    }
     updateBody = lowerCaseValue(updateBody, ['question', 'image']);
     Object.assign(question, updateBody);
     await question.save();

@@ -10,7 +10,7 @@ const createAnswer = (async(userBody) =>{
 })
 
 const getAllAnswers = (async() =>{
-    const answer = Answers.findAll({})
+    const answer = await Answers.findAll({})
     if (!answer) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Answer not found');
     }
@@ -18,7 +18,11 @@ const getAllAnswers = (async() =>{
 })
 
 const getAnsersByPk = (async(id) =>{
-    return Answers.findByPk(id)
+    const answer = await Answers.findByPk(id)
+    if (!answer) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Answer not found');
+    }
+    return answer
 })
 
 const updateByPk = (async(id, updateBody) =>{

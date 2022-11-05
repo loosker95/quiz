@@ -9,11 +9,19 @@ const createResult = (async(userBody) =>{
 })
 
 const getAllResult = (async() =>{
-    return Result.findAll({})
+    const result = await Result.findAll({})
+    if (!result) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Result not found');
+    }
+    return result;
 })
 
 const getResultByPk = (async(id) =>{
-    return Result.findByPk(id)
+    const result = await Result.findByPk(id)
+    if (!result) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Result not found');
+    }
+    return result;
 })
 
 const updateResultByPk = (async(id, updateBody) =>{
@@ -34,7 +42,7 @@ const deleteResultByPk = (async(id) =>{
 })
 
 const viewResult = (async(id) =>{ 
-    const view = Result.findByPk(id)
+    const view = await Result.findByPk(id)
     if (!view) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Result not found');
     }

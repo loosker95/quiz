@@ -10,7 +10,11 @@ const createAnswer = (async(userBody) =>{
 })
 
 const getAllAnswers = (async() =>{
-    return Answers.findAll({})
+    const answer = Answers.findAll({})
+    if (!answer) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Answer not found');
+    }
+    return answer
 })
 
 const getAnsersByPk = (async(id) =>{
@@ -19,6 +23,9 @@ const getAnsersByPk = (async(id) =>{
 
 const updateByPk = (async(id, updateBody) =>{
     const answer = await getAnsersByPk(id);
+    if (!answer) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Answer not found');
+    }
     updateBody = lowerCaseValue(updateBody, ['answers', 'is_correct', 'image']);
     Object.assign(answer, updateBody);
     await answer.save();

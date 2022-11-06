@@ -20,7 +20,7 @@ const createUser = (async (userBody) => {
 });
 
 const getAllUsers = (async () => {
-    const data = await users.findAll({})
+    const data = await users.findAll()
     if (!data) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
@@ -65,9 +65,12 @@ const createLogin = (async(values) =>{
     if(checkPassword === false){
         throw new ApiError(httpStatus.BAD_REQUEST, 'Email or password incorect');
     }
-    token = jwt.sign({email: values.email}, process.env.TOKEN_SECRET, {expiresIn: '1800s'})
-
-    return {data, token}
+    const token = jwt.sign({id: data.email}, process.env.TOKEN_SECRET, {expiresIn: '3600s'})
+    
+    // going to insert refresh token here to the DB 
+    const refreshToken = jwt.sign({id: data.email}, process.env.TOKEN_SECRET_REFRESH, {expiresIn: '180s'})
+    
+    return {token, refreshToken}
 })
 
 const createRegister = (async(values) =>{

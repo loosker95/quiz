@@ -4,10 +4,11 @@ const userController = require('../../controllers/user.controller')
 const userToken = require('../../controllers/token.contoller')
 const validate = require('../../middlewares/validate')
 const userValidation = require('../../validations/user.validation')
+const auth = require('../../middlewares/auth')
 
 
 
-router.post('/users', validate(userValidation.createUser), userController.addUser)
+router.post('/users', auth, validate(userValidation.createUser), userController.addUser)
 router.get('/users', userController.getAllUsers)
 router.get('/users/:id', validate(userValidation.getUser), userController.findUser)
 router.patch('/users/:id', validate(userValidation.updateUser), userController.updateUser)

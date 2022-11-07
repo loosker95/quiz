@@ -6,6 +6,7 @@ const userRoute = require('./routes/v1/user.route')
 const questionRoute = require('./routes/v1/question.route')
 const answerRoute = require('./routes/v1/answer.route')
 const resultRoute = require('./routes/v1/result.route')
+const authRoute = require('./routes/v1/auth.route')
 const ApiError = require('./utils/ApiError')
 const httpStatus = require('http-status')
 
@@ -26,6 +27,7 @@ app.use('/api/v1', userRoute)
 app.use('/api/v1/questions', questionRoute)
 app.use('/api/v1/answers', answerRoute)
 app.use('/api/v1/results', resultRoute)
+app.use('/v1/auth', authRoute)
 app.use((req, res, next) => {
     next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
 });

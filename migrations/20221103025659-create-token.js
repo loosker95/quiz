@@ -18,7 +18,7 @@ module.exports = {
       },
       token: Sequelize.STRING,
       refresh_token: Sequelize.STRING,
-      expiration_date:Sequelize.DATE,
+      expiration_delay: Sequelize.STRING,
       created_at: Sequelize.DATE,
       updated_at: Sequelize.DATE
     });

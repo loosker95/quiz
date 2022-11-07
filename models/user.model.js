@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("./connect");
 const bcrypt = require("bcryptjs");
 const Result = require("./result.model");
-const Token = require("./token.model");
+const Token = require("./refreshToken.model");
 
 const User = sequelize().define("users", {
   id:{

@@ -3,9 +3,8 @@ const users = require('../models/user.model')
 const httpStatus = require('http-status')
 const ApiError = require('../utils/ApiError')
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken')
-const dotenv = require('dotenv');
-dotenv.config({path: './config.env'})
+const {generateToken, generateRefreshToken} = require('../utils/generateToken')
+const Refresh = require('../models/refreshToken.model')
 
 
 const createUser = (async (userBody) => {
@@ -20,7 +19,7 @@ const createUser = (async (userBody) => {
 });
 
 const getAllUsers = (async () => {
-    const data = await users.findAll()
+    const data = await users.findAll({})
     if (!data) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
@@ -31,7 +30,7 @@ const getUserByPk = (async (id) => {
     const user = await users.findByPk(id)
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-    }else{
+    } else {
         return user
     }
 })
@@ -56,26 +55,33 @@ const deleteUserByPk = (async (id) => {
     return user
 })
 
-const createLogin = (async(values) =>{
-    const data = await users.findOne({ where: { email: values.email} })
-    if(!data){
+const createLogin = (async (values) => {
+    const data = await users.findOne({ where: { email: values.email } })
+    if (!data) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'User not exist');
     }
     const checkPassword = await bcrypt.compare(values.password, data.password);
-    if(checkPassword === false){
+    if (checkPassword === false) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Email or password incorect');
     }
-    const token = jwt.sign({id: data.email}, process.env.TOKEN_SECRET, {expiresIn: '3600s'})
-    
+    const emailToken = data.email
+    const accessToken = generateToken(emailToken)
+
+
     // going to insert refresh token here to the DB 
-    const refreshToken = jwt.sign({id: data.email}, process.env.TOKEN_SECRET_REFRESH, {expiresIn: '180s'})
-    
-    return {token, refreshToken}
+    const refreshToken = generateRefreshToken(emailToken)
+    const token = accessToken
+    const expDate = process.env.REFRESH_TOKEN_EXPIRE_TIME
+    const date = new Date();
+    const newToken = {user_id: data.id, token: token, refresh_token: refreshToken, expiration_delay: expDate, created_at: date, updated_at: date}
+    await Refresh.create(newToken)
+
+    return { accessToken, refreshToken }
 })
 
-const createRegister = (async(values) =>{
-    const {username, fullname, email, password} = values
-    const newRegister = {username, fullname, email, password}
+const createRegister = (async (values) => {
+    const { username, fullname, email, password } = values
+    const newRegister = { username, fullname, email, password }
 
     if (await users.isEmailTaken(values.email)) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Email address is taken!');
@@ -83,8 +89,9 @@ const createRegister = (async(values) =>{
     if (await users.isUsernameTaken(values.username)) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Username is taken!');
     }
-        return await users.create(newRegister);
+    return await users.create(newRegister);
 })
+
 
 module.exports = {
     createUser,

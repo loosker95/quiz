@@ -11,7 +11,7 @@ const Token = sequelize().define("tokens", {
   user_id: DataTypes.UUID,
   token: DataTypes.STRING,
   refresh_token: DataTypes.STRING,
-  expiration_date: DataTypes.DATE,
+  expiration_delay: DataTypes.STRING,
   created_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW

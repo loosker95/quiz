@@ -7,7 +7,7 @@ module.exports = {
 
     addQuestion: catchAsync(async (req, res) => {
         const data = await questionService.createQuestion(req.body)
-        res.send(response(httpStatus.CREATED, 'Question successfully added', data));
+        res.send(response(httpStatus.CREATED, 'Question added successfully', data));
     }),
 
     allQuestions: catchAsync(async (req, res) => {

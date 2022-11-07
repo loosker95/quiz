@@ -2,7 +2,6 @@ const httpStatus = require('http-status');
 const response = require('../utils/templateResponse')
 const catchAsync = require('../utils/catchAsync')
 const { userService } = require('../services')
-const reponseToken = require('../utils/templateResponse')
 
 
 

@@ -22,5 +22,10 @@ const Token = sequelize().define("tokens", {
   }
 });
 
+Token.getUserRetfreshToken = async (_id) => {
+  const tokens = await Token.findAll({raw: true, where: {user_id: _id}})
+  return tokens;
+} 
+
 module.exports = Token;
 

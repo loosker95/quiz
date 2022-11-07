@@ -64,7 +64,7 @@ const createLogin = (async (values) => {
     if (checkPassword === false) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Email or password incorect');
     }
-    const emailToken = data.email
+    const emailToken = {email: data.email, id:data.id}
     const accessToken = generateToken(emailToken)
 
     // Insert refresh token here to the DB 

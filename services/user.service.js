@@ -67,8 +67,7 @@ const createLogin = (async (values) => {
     const emailToken = data.email
     const accessToken = generateToken(emailToken)
 
-
-    // going to insert refresh token here to the DB 
+    // Insert refresh token here to the DB 
     const refreshToken = generateRefreshToken(emailToken)
     const token = accessToken
     const expDate = process.env.REFRESH_TOKEN_EXPIRE_TIME

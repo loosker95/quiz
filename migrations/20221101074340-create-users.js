@@ -26,8 +26,8 @@ module.exports = {
         len: [2,10]
       },
       avatar: Sequelize.STRING,
-      is_admin: {
-        type: Sequelize.BOOLEAN,
+      roles: {
+        type: Sequelize.STRING,
         allowNull: false
       },
       created_at: Sequelize.DATE,

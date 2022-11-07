@@ -32,9 +32,9 @@ const User = sequelize().define("users", {
     min: 8
   },
   avatar: DataTypes.STRING,
-  is_admin: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
+  roles: {
+    type: DataTypes.STRING,
+    defaultValue: 'user',
     allowNull: false,
   },
   created_at: {

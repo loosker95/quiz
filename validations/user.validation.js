@@ -7,7 +7,7 @@ const createUser = {
         email: Joi.string().email().required(),
         password: Joi.string().alphanum().min(8).required(),
         avatar: Joi.string().optional(),
-        is_admin: Joi.boolean().required(),
+        roles: Joi.string().required(),
     }),
 };
 
@@ -23,7 +23,7 @@ const updateUser = {
         email: Joi.string().email().required().optional(),
         password: Joi.string().alphanum().min(8).optional(),
         avatar: Joi.string().optional(),
-        is_admin: Joi.boolean().required().optional(),
+        roles: Joi.string().required().optional(),
     })
 }
 
@@ -54,7 +54,7 @@ const createRegister = {
         email: Joi.string().email().required(),
         password: Joi.string().alphanum().min(8).required(),
         avatar: Joi.string().optional(),
-        is_admin: Joi.boolean().required(),
+        roles: Joi.string().required(),
     }),
 };
 

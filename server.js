@@ -28,6 +28,7 @@ app.use('/api/v1/questions', questionRoute)
 app.use('/api/v1/answers', answerRoute)
 app.use('/api/v1/results', resultRoute)
 app.use('/v1/auth', authRoute)
+
 app.use((req, res, next) => {
     next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
 });

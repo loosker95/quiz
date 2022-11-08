@@ -7,6 +7,7 @@ const {generateToken, generateRefreshToken} = require('../utils/generateToken')
 const Refresh = require('../models/refreshToken.model')
 
 
+
 const createUser = (async (userBody) => {
     userBody = lowerCaseValue(userBody, ['username', 'fullname', 'email', 'password']);
     if (await users.isEmailTaken(userBody.email)) {

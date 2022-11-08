@@ -1,11 +1,12 @@
 const httpStatus = require('http-status');
 const response = require('../utils/templateResponse')
 const catchAsync = require('../utils/catchAsync')
-const { userService } = require('../services')
+const { refreshTokenService } = require('../services')
 
 module.exports = {
-    refreshToken: catchAsync(async (req, res) => {
-        const data = await userService.createLogin(req.body)
-        res.send(response(httpStatus.CREATED, 'Token added successfully', data));
+    
+    generateToken: catchAsync( async(req, res) =>{
+        const data = await refreshTokenService.refreshTokenGenerate(req.body)
+        res.send(response(httpStatus.CREATED, 'Token generated successfully', data));
     })
 }

@@ -75,9 +75,5 @@ User.isUsernameTaken = async (_username) => {
   return !!users;
 };
 
-User.findUser = async (_user_id) => {
-  const users = await User.findOne({ where: { id: _user_id } });
-  return users;
-};
 
 module.exports = User;

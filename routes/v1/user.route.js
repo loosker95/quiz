@@ -7,11 +7,11 @@ const {tokenVerify, authRole} = require('../../middlewares/auth')
 
 
 
-router.post('/users', validate(userValidation.createUser), userController.addUser)
-router.get('/users', tokenVerify, authRole('admin'), userController.getAllUsers)
-router.get('/users/:id', validate(userValidation.getUser), userController.findUser)
-router.patch('/users/:id', validate(userValidation.updateUser), userController.updateUser)
-router.delete('/users/:id', validate(userValidation.deleteUser),userController.deleteUser)
+router.post('/', validate(userValidation.createUser), userController.addUser)
+router.get('/', tokenVerify, authRole('admin'), userController.getAllUsers)
+router.get('/:id', validate(userValidation.getUser), userController.findUser)
+router.patch('/:id', validate(userValidation.updateUser), userController.updateUser)
+router.delete('/:id', validate(userValidation.deleteUser),userController.deleteUser)
 
 
 router.post('/auth/login', validate(userValidation.loginUser), userController.loginUser)

@@ -75,8 +75,8 @@ const createLogin = (async (values) => {
     const date = new Date();
     const newToken = {user_id: data.id, token: token, refresh_token: refreshToken, expiration_delay: expDate, created_at: date, updated_at: date}
     await Refresh.create(newToken)
-
-    return { accessToken, refreshToken }
+    
+    return ({data, accessToken, refreshToken})
 })
 
 const createRegister = (async (values) => {

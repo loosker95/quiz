@@ -1,5 +1,6 @@
 const lowerCaseValue = require('../utils/charaters')
 const Question = require('../models/question.model')
+const Answer =  require('../models/answer.model')
 const httpStatus = require('http-status')
 const ApiError = require('../utils/ApiError')
 
@@ -18,7 +19,14 @@ const getAllQuestions = (async() =>{
 })
 
 const getQuestionByPk = (async(id) =>{
-    const question = await Question.findByPk(id)
+    const question = await Question.findAll({
+        include: {
+            model: Answer,
+            where: {
+              question_id: id
+            }
+          }
+    })
     if (!question) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Question not found');
     }
@@ -45,10 +53,25 @@ const deleteQuestionByPK = (async(id) =>{
     return question
 })
 
+const createSearchQuestion = (async(value) =>{
+    const { question } = value
+    
+    const questions = await getAllQuestions()
+    const getQuestions = questions.filter((item) =>{
+        return item.question === question;
+    })
+
+    if (Object.keys(getQuestions).length === 0) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Question not found');
+    }
+    return getQuestions;
+})
+
 module.exports = {
     createQuestion,
     getAllQuestions,
     getQuestionByPk,
     updateQuestionByPk,
-    deleteQuestionByPK
+    deleteQuestionByPK,
+    createSearchQuestion
 }

@@ -28,6 +28,11 @@ module.exports = {
     deleteQuestion: catchAsync(async(req, res) =>{ 
         await questionService.deleteQuestionByPK(req.params.id)
         res.send(response(httpStatus.ACCEPTED, 'Question deleted successfully'));
+    }),
+
+    searchQuestion: catchAsync(async(req, res) =>{
+        const data = await questionService.createSearchQuestion(req.body)
+        res.send(response(httpStatus.OK, 'Get question', data));
     })
 
 }   

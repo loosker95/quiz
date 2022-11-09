@@ -26,11 +26,18 @@ const deleteQuestion = {
     }),
 }
 
+const searchQuestionValidation = {
+    body: Joi.object().keys({
+        question: Joi.string().required()
+    }),
+}
+
 
 module.exports = {
     createQuestion,
     updateQuestion,
     deleteQuestion,
-    getQuestion
+    getQuestion,
+    searchQuestionValidation
 };
 

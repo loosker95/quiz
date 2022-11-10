@@ -13,5 +13,7 @@ router.delete('/:id', validate(questionValidation.deleteQuestion), questionContr
 
 router.post('/search', validate(questionValidation.searchQuestionValidation), questionController.searchQuestion)
 
+router.get('/pages/view', questionController.paginateQuestion)
+
 
 module.exports = router

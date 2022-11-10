@@ -55,7 +55,7 @@ const deleteQuestionByPK = (async(id) =>{
 
 const createSearchQuestion = (async(value) =>{
     const { question } = value
-    
+
     const questions = await getAllQuestions()
     const getQuestions = questions.filter((item) =>{
         return item.question === question;
@@ -67,11 +67,41 @@ const createSearchQuestion = (async(value) =>{
     return getQuestions;
 })
 
+const createPagination = (async(values) =>{
+    const pages = values.page
+    const limit = values.limit
+    const startIndex = (pages - 1) * limit
+    const endIndex = pages * limit
+
+    const question = await Question.findAll({offset:startIndex, limit:endIndex})
+
+    if (Object.keys(question).length === 0) {
+        throw new ApiError(question.OK, 'Question not found');
+    }
+    // console.log(typeof question)
+    return question
+})
+
+// const createPagination = (async(pages) =>{
+//     // const { pages } =  value
+//     // const limit = parseInt(req.query.limit)
+//     // const {page, limit} = value
+//     // const perPage = 10
+//     // const page = value
+//     // const offset = 
+// console.log("-----------")
+// console.log(pages)
+
+//     // const question = await Question.findAll({offset:offset, limit:page})
+//     return pages;
+// })
+
 module.exports = {
     createQuestion,
     getAllQuestions,
     getQuestionByPk,
     updateQuestionByPk,
     deleteQuestionByPK,
-    createSearchQuestion
+    createSearchQuestion,
+    createPagination
 }

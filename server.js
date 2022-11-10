@@ -15,13 +15,18 @@ connectDb();
 
 
 app.use(express.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/api/v1', routes)
 
-app.use((req, res, next) => {
-    next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
-});
+
+app.use(( err, req, res, next ) => {
+    res.locals.error = err;
+    if (err.status >= 100 && err.status < 600)
+    {res.status(err.status);}
+      res.status(500);
+      next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
+    });
 
 app.use(errorConverter);
 app.use(errorHandler);

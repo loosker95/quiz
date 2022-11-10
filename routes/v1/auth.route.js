@@ -11,5 +11,9 @@ router.post('/register', validate(userValidation.createRegister), userController
 
 router.post('/refresh-token', validate(authValidation.createRefreshToken) ,userToken.generateToken);
 
+router.post('/login', validate(userValidation.loginUser), userController.loginUser)
+
+
+
 
 module.exports = router

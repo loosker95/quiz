@@ -12,7 +12,7 @@ module.exports = {
     }),
 
     getAllResult: catchAsync(async (req, res) => {
-        const data = await resultService.getAllResult()
+        const data = await resultService.getAllResult(req.user.id)
         res.send(response(httpStatus.OK, 'Get all results', data));
     }),
 

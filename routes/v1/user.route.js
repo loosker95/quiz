@@ -14,7 +14,6 @@ router.patch('/:id', validate(userValidation.updateUser), userController.updateU
 router.delete('/:id', validate(userValidation.deleteUser),userController.deleteUser)
 
 
-router.post('/auth/login', validate(userValidation.loginUser), userController.loginUser)
 
 
 module.exports = router

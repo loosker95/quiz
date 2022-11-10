@@ -8,9 +8,9 @@ const createResult = (async(userBody) =>{
     return Result.create({ ...userBody });
 })
 
-const getAllResult = (async() =>{
-    const result = await Result.findAll({})
-    if (!result) {
+const getAllResult = (async(id) =>{
+    const result = await Result.findAll({where: {user_id: id}})
+    if (!result || Object.keys(result).length == 0) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Result not found');
     }
     return result;

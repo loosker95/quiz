@@ -78,23 +78,9 @@ const createPagination = (async(values) =>{
     if (Object.keys(question).length === 0) {
         throw new ApiError(question.OK, 'Question not found');
     }
-    // console.log(typeof question)
     return question
 })
 
-// const createPagination = (async(pages) =>{
-//     // const { pages } =  value
-//     // const limit = parseInt(req.query.limit)
-//     // const {page, limit} = value
-//     // const perPage = 10
-//     // const page = value
-//     // const offset = 
-// console.log("-----------")
-// console.log(pages)
-
-//     // const question = await Question.findAll({offset:offset, limit:page})
-//     return pages;
-// })
 
 module.exports = {
     createQuestion,

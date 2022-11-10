@@ -11,9 +11,7 @@ router.get('/:id', validate(questionValidation.updateQuestion), questionControll
 router.patch('/:id', validate(questionValidation.updateQuestion), questionController.updateQuestion)
 router.delete('/:id', validate(questionValidation.deleteQuestion), questionController.deleteQuestion)
 
-router.post('/search', validate(questionValidation.searchQuestionValidation), questionController.searchQuestion)
-
-router.get('/pages/view', questionController.paginateQuestion)
+router.get('/search/view', questionController.searchQuestion)
 
 
 module.exports = router

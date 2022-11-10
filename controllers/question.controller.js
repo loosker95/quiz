@@ -31,13 +31,7 @@ module.exports = {
     }),
 
     searchQuestion: catchAsync(async(req, res) =>{
-        const data = await questionService.createSearchQuestion(req.body)
+        const data = await questionService.searchAndpageQuestion(req.body, req.query)
         res.send(response(httpStatus.OK, 'Get question', data));
     }),
-
-    paginateQuestion: catchAsync(async(req, res) =>{
-        const data = await questionService.createPagination(req.query)
-        res.send(response(httpStatus.OK, 'Get question', data));
-    })
-
 }   

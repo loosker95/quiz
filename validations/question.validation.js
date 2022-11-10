@@ -27,9 +27,13 @@ const deleteQuestion = {
 }
 
 const searchQuestionValidation = {
-    body: Joi.object().keys({
-        question: Joi.string().required()
-    }),
+    // query: Joi.object().keys({
+    //     page: Joi.string().required(),
+    //     limit: Joi.string().required()
+    // }),
+    // body: Joi.object().keys({
+    //     question: Joi.string().required()
+    // }),
 }
 
 

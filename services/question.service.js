@@ -11,22 +11,24 @@ const createQuestion = (async (userBody) => {
 })
 
 const getAllQuestions = (async () => {
-    const question = await Question.findAll({})
-    if (!question) {
+    const question = await Question.findAll(
+        {
+            include: {
+                model: Answer,
+                where: {
+                    question_id: id
+                }
+            }
+        }
+    )
+    if (Object.keys(question).length === 0) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Question not found');
     }
     return question
 })
 
 const getQuestionByPk = (async (id) => {
-    const question = await Question.findAll({
-        include: {
-            model: Answer,
-            where: {
-                question_id: id
-            }
-        }
-    })
+    const question = await Question.findByPk(id)
     if (!question) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Question not found');
     }

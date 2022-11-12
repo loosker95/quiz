@@ -59,9 +59,6 @@ User.beforeUpdate(async (user, options) => {
   if (user.changed("password")) {
     user.password = await bcrypt.hash(user.password, 8);
   }
-  if (user.changed("email")) {
-    user.email = false;
-  }
     user.updated_at = new Date();
 });
 

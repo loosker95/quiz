@@ -1,6 +1,7 @@
 const lowerCaseValue = require('../utils/charaters')
 const Question = require('../models/question.model')
 const Answer = require('../models/answer.model')
+const Result = require('../models/result.model')
 const httpStatus = require('http-status')
 const ApiError = require('../utils/ApiError')
 
@@ -10,13 +11,14 @@ const createQuestion = (async (userBody) => {
     return Question.create({ ...userBody });
 })
 
-const getAllQuestions = (async () => {
+const getAllQuestions = (async (getUser) => {
+    const theUserId = getUser.id
     const question = await Question.findAll(
         {
             include: {
-                model: Answer,
+                model: Result,
                 where: {
-                    question_id: id
+                    user_id: theUserId
                 }
             }
         }

@@ -11,7 +11,7 @@ module.exports = {
     }),
 
     allQuestions: catchAsync(async (req, res) => {
-        const data = await questionService.getAllQuestions(req.user)
+        const data = await questionService.getAllQuestions()
         res.send(response(httpStatus.OK, 'Get all questions', data));
     }),
 

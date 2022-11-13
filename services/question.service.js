@@ -1,7 +1,6 @@
 const lowerCaseValue = require('../utils/charaters')
 const Question = require('../models/question.model')
 const Answer = require('../models/answer.model')
-const Result = require('../models/result.model')
 const httpStatus = require('http-status')
 const ApiError = require('../utils/ApiError')
 
@@ -12,17 +11,11 @@ const createQuestion = (async (userBody) => {
 })
 
 const getAllQuestions = (async (getUser) => {
-    const theUserId = getUser.id
-    const question = await Question.findAll(
-        {
-            include: {
-                model: Result,
-                where: {
-                    user_id: theUserId
-                }
-            }
+    const question = await Question.findAll({
+        include: {
+            model: Answer,
         }
-    )
+    })
     if (Object.keys(question).length === 0) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Question not found');
     }
@@ -30,7 +23,14 @@ const getAllQuestions = (async (getUser) => {
 })
 
 const getQuestionByPk = (async (id) => {
-    const question = await Question.findByPk(id)
+    const question = await Question.findOne({
+        include: {
+            model: Answer,
+            where: {
+                question_id: id
+            }
+        }
+    })
     if (!question) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Question not found');
     }

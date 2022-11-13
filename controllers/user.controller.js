@@ -40,5 +40,10 @@ module.exports = {
     registerUser: catchAsync(async (req, res) => {
         const data = await userService.createRegister(req.body)
         res.send(response(httpStatus.CREATED, 'User registered successfully', data));
-    })
+    }),
+
+    logoutUser :  catchAsync(async (req, res) => {
+        const data = await userService.createLogout(req.body)
+        res.send(response(httpStatus.CREATED, 'Logout successfully', data));
+    }),
 }

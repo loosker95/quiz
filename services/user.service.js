@@ -92,6 +92,19 @@ const createRegister = (async (values) => {
     return await users.create(newRegister);
 })
 
+const createLogout = (async(value) =>{
+    const TherefreshToken  = value.refresh_token
+    if (!TherefreshToken) throw new ApiError(httpStatus.UNAUTHORIZED, 'Empty, set refresh token');
+
+    const getRefreshToken = await Refresh.findOne({raw: true, where : {refresh_token: TherefreshToken}})
+    if (!getRefreshToken || Object.keys(getRefreshToken).length == 0) throw new ApiError(httpStatus.UNAUTHORIZED, 'Failed to authenticate token.');
+    
+    const ResultRefreshToken = getRefreshToken.refresh_token
+    await Refresh.destroy({where :{refresh_token: ResultRefreshToken}})
+
+    return ResultRefreshToken
+})
+
 
 module.exports = {
     createUser,
@@ -100,5 +113,6 @@ module.exports = {
     updateUserByPk,
     deleteUserByPk,
     createLogin,
-    createRegister
+    createRegister,
+    createLogout
 }

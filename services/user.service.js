@@ -1,10 +1,15 @@
+const dotenv = require('dotenv')
+dotenv.config({ path: './config.env' })
 const lowerCaseValue = require('../utils/charaters')
 const users = require('../models/user.model')
 const httpStatus = require('http-status')
 const ApiError = require('../utils/ApiError')
 const bcrypt = require('bcryptjs');
-const {generateToken, generateRefreshToken} = require('../utils/generateToken')
+const { generateToken, generateRefreshToken } = require('../utils/generateToken')
 const Refresh = require('../models/refreshToken.model')
+const nodemailer = require('nodemailer')
+
+
 
 
 
@@ -65,7 +70,7 @@ const createLogin = (async (values) => {
     if (checkPassword === false) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Email or password incorect');
     }
-    const emailToken = {email: data.email, id:data.id}
+    const emailToken = { email: data.email, id: data.id }
     const accessToken = generateToken(emailToken)
 
     // Insert refresh token here to the DB 
@@ -73,10 +78,10 @@ const createLogin = (async (values) => {
     const token = accessToken
     const expDate = process.env.REFRESH_TOKEN_EXPIRE_TIME
     const date = new Date();
-    const newToken = {user_id: data.id, token: token, refresh_token: refreshToken, expiration_delay: expDate, created_at: date, updated_at: date}
+    const newToken = { user_id: data.id, token: token, refresh_token: refreshToken, expiration_delay: expDate, created_at: date, updated_at: date }
     await Refresh.create(newToken)
-    
-    return ({data, accessToken, refreshToken})
+
+    return ({ data, accessToken, refreshToken })
 })
 
 const createRegister = (async (values) => {
@@ -89,18 +94,39 @@ const createRegister = (async (values) => {
     if (await users.isUsernameTaken(values.username)) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Username is taken!');
     }
+
+    // send email
+    let transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.EMAIL_ACCOUNT_USER,
+            pass: process.env.EMAIL_ACCOUNT_PASS,
+        },
+    });
+
+    let message = {
+        from: `${process.env.APP_NAME} ${process.env.APP_EMAIL}`,
+        to: `${email}`,
+        subject: "Hello",
+        text: `Hello From ${process.env.APP_NAME}`,
+        html: "<b>Hello welcome to the quiz plateform</b>",
+    }
+
+    await transporter.sendMail(message);
     return await users.create(newRegister);
 })
 
-const createLogout = (async(value) =>{
-    const TherefreshToken  = value.refresh_token
+const createLogout = (async (value) => {
+    const TherefreshToken = value.refresh_token
     if (!TherefreshToken) throw new ApiError(httpStatus.UNAUTHORIZED, 'Empty, set refresh token');
 
-    const getRefreshToken = await Refresh.findOne({raw: true, where : {refresh_token: TherefreshToken}})
+    const getRefreshToken = await Refresh.findOne({ raw: true, where: { refresh_token: TherefreshToken } })
     if (!getRefreshToken || Object.keys(getRefreshToken).length == 0) throw new ApiError(httpStatus.UNAUTHORIZED, 'Failed to authenticate token.');
-    
+
     const ResultRefreshToken = getRefreshToken.refresh_token
-    await Refresh.destroy({where :{refresh_token: ResultRefreshToken}})
+    await Refresh.destroy({ where: { refresh_token: ResultRefreshToken } })
 
     return ResultRefreshToken
 })

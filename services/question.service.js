@@ -57,29 +57,27 @@ const deleteQuestionByPK = (async (id) => {
     return question
 })
 
-const searchAndpageQuestion = (async (searching, values) => {
-    const searchQuestion  = searching.question
-    
-    if (searchQuestion) {
-        const getQuestions = await Question.searchAQuestions(searchQuestion)
-        if (Object.keys(getQuestions).length === 0) {
-            throw new ApiError(httpStatus.NOT_FOUND, 'Question not found');
-        }
-        return getQuestions;
+const searchAndpageQuestion = (async (values) => {
+    const searchQuestion = values.question
+    const pages = values.page
+    const limit = values.limit
+    const startIndex = (pages - 1) * limit
+    const endIndex = pages * limit
+
+    const question = await Question.findAll(
+        { 
+            offset: startIndex, 
+            limit: endIndex,
+            where:{
+                question: searchQuestion
+            }
+        })
+
+    if (Object.keys(question).length === 0) {
+        throw new ApiError(question.OK, 'Question not found');
     }
 
-    if(values){
-        const pages = values.page
-        const limit = values.limit
-        const startIndex = (pages - 1) * limit
-        const endIndex = pages * limit
-        const question = await Question.findAll({ offset: startIndex, limit: endIndex })
-    
-        if (Object.keys(question).length === 0) {
-            throw new ApiError(question.OK, 'Question not found');
-        }
-        return question
-    }
+    return question
 
 })
 

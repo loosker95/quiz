@@ -2,6 +2,7 @@ const lowerCaseValue = require('../utils/charaters')
 const Answers = require('../models/answer.model')
 const httpStatus = require('http-status')
 const ApiError = require('../utils/ApiError')
+const Question = require('../models/question.model')
 
 
 const createAnswer = (async(userBody) =>{

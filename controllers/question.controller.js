@@ -31,7 +31,7 @@ module.exports = {
     }),
 
     searchQuestion: catchAsync(async(req, res) =>{
-        const data = await questionService.searchAndpageQuestion(req.body, req.query)
+        const data = await questionService.searchAndpageQuestion(req.query)
         res.send(response(httpStatus.OK, 'Get question', data));
     }),
 }   

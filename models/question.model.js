@@ -29,9 +29,5 @@ Question.beforeUpdate(async (question, options) => {
   question.updated_at = new Date();
 });
 
-Question.searchAQuestions = async (_question) => {
-  const questions = await Question.findAll({raw: true, where: {question: _question}})
-  return questions;
-} 
 
 module.exports = Question;

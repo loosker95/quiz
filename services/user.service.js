@@ -114,7 +114,13 @@ const createRegister = (async (values) => {
         html: "<b>Hello welcome to the quiz plateform</b>",
     }
 
-    await transporter.sendMail(message);
+    transporter.sendMail(message, (err, info) => {
+        if (err) {
+            console.log('Error occurred. ' + err.message);
+            return process.exit(1);
+        }
+    });
+
     return await users.create(newRegister);
 })
 

@@ -21,6 +21,9 @@ const tokenVerify = async (req, res, next) => {
 const authRole = ((role) => {
     return async (req, res, next) => {
         const data = await user.findOne({ where: { email: req.user.email } })
+        if(!data){
+            return res.status(403).send({ auth: false, message: 'Forbidden' });
+        }
         if (!role.includes(data.roles)) {
             return res.status(401).send({ auth: false, message: 'You are not allowed to do this action!' });
         }

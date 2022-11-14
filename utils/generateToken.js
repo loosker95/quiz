@@ -10,8 +10,12 @@ const generateRefreshToken = (email) =>{
     return jwt.sign(email, process.env.TOKEN_SECRET_REFRESH, { expiresIn: process.env.REFRESH_TOKEN_EXPIRE_TIME })
 }
 
+const generateTokenCreateUser = (email) =>{
+    return jwt.sign(email, process.env.TOKEN_CREATE_USER_SECRET, { expiresIn: process.env.CREATE_USER_TOKEN_EXPIRE_TIME })
+}
 
 module.exports = {
     generateToken, 
-    generateRefreshToken
+    generateRefreshToken,
+    generateTokenCreateUser
 }

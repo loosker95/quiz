@@ -18,8 +18,12 @@ const refreshTokenGenerate = (async (dataBody) => {
 
     const getUserInfo = await User.findOne({ raw: true, where: { id: dataBody.user_id } })
     const payload = { email: getUserInfo.email, id: getUserInfo.id }
+    // jwt.verify(curentRefreshToken, process.env.REFRESH_TOKEN_EXPIRE_TIME, (error, user) => {
+    //     if (error) throw new ApiError(httpStatus.UNAUTHORIZED, 'Failed to authenticate token...');
         const accessToken = generateToken(payload)
         return { accessToken: accessToken }
+    // })
+
 })
 
 

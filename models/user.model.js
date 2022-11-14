@@ -27,6 +27,11 @@ const User = sequelize().define("users", {
     allowNull: false,
     unique: true,
   },
+  verified: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: 'false',
+  },
   password: {
     type: DataTypes.STRING(64),
     min: 8
@@ -52,6 +57,7 @@ User.hasMany(Token, {foreignKey: 'user_id', targetKey: 'id'})
 
 User.beforeCreate(async (user, options) => {
   user.password = await bcrypt.hash(user.password, 8);
+  user.verified = false
 });
 
 
@@ -72,5 +78,9 @@ User.isUsernameTaken = async (_username) => {
   return !!users;
 };
 
+User.isIdValid = async (_id) => {
+  const users = await User.findOne({ where: { id: _id } });
+  return users;
+};
 
 module.exports = User;

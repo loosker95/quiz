@@ -42,6 +42,11 @@ module.exports = {
         res.send(response(httpStatus.CREATED, 'User registered successfully', data));
     }),
 
+    verifyEmail: catchAsync(async (req, res) => {
+        await userService.emailVerification(req.params)
+        res.send(response(httpStatus.CREATED, 'Email verified successfully'));
+    }),
+
     logoutUser :  catchAsync(async (req, res) => {
         const data = await userService.createLogout(req.body)
         res.send(response(httpStatus.CREATED, 'Logout successfully', data));

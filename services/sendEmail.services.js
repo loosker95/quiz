@@ -14,7 +14,7 @@ const sendEmail = (async (data) => {
     const verifyEmailAccessToken = generateTokenCreateUser(dataToken)
 
 
-    const emailTemplate = await ejs.renderFile(__dirname + "./../views/sendEmail.ejs");
+    const emailTemplate = await ejs.renderFile(__dirname + "./../views/sendEmail.ejs,", { name: 'Stranger' });
 
     let message = {
         from: `${process.env.APP_NAME} ${process.env.APP_EMAIL}`,

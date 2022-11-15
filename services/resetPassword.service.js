@@ -19,7 +19,7 @@ const resetPasswd = (async (value) => {
     const resetPassToken = { email: email }
     const resetPasswordAccessToken = generateTokenResetPass(resetPassToken)
 
-    const passResetTemplate = await ejs.renderFile(__dirname + "./../views/ResetpassEmail.ejs");
+    const passResetTemplate = await ejs.renderFile(__dirname + "./../views/ResetpassEmail.ejs", { name: 'Stranger' });
 
     let message = {
         from: `${process.env.APP_NAME} ${process.env.APP_EMAIL}`,

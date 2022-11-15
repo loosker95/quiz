@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 const response = require('../utils/templateResponse')
 const catchAsync = require('../utils/catchAsync')
-const { userService } = require('../services')
+const { userService, sendEmailService } = require('../services')
 
 
 
@@ -43,7 +43,7 @@ module.exports = {
     }),
 
     verifyEmail: catchAsync(async (req, res) => {
-        await userService.emailVerification(req.params)
+        await sendEmailService.emailVerification(req.params)
         res.send(response(httpStatus.CREATED, 'Email verified successfully'));
     }),
 

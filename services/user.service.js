@@ -1,14 +1,13 @@
 const dotenv = require('dotenv')
 dotenv.config({ path: './config.env' })
 const lowerCaseValue = require('../utils/charaters')
-const jwt = require('jsonwebtoken');
 const users = require('../models/user.model')
 const httpStatus = require('http-status')
 const ApiError = require('../utils/ApiError')
 const bcrypt = require('bcryptjs');
-const { generateToken, generateRefreshToken, generateTokenCreateUser } = require('../utils/generateToken')
+const { generateToken, generateRefreshToken } = require('../utils/generateToken')
 const Refresh = require('../models/refreshToken.model')
-const nodemailer = require('nodemailer')
+const sendEmailService = require('./sendEmail.services')
 
 
 
@@ -93,54 +92,12 @@ const createRegister = (async (values) => {
     if (await users.isUsernameTaken(values.username)) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Username is taken!');
     }
-
-    // send email
-    let transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false,
-        auth: {
-            user: process.env.EMAIL_ACCOUNT_USER,
-            pass: process.env.EMAIL_ACCOUNT_PASS,
-        },
-    });
-
-    // create token while register
-    const dataToken = { email: email }
-    const verifyEmailAccessToken = generateTokenCreateUser(dataToken)
-
-    let message = {
-        from: `${process.env.APP_NAME} ${process.env.APP_EMAIL}`,
-        to: `${email}`,
-        subject: "Hello",
-        text: `Hello From ${process.env.APP_NAME}`,
-        html: `<a class="btn btn-primary" href="${process.env.VERIFY_EMAIL_HOST}/api/v1/auth/verify-email/${verifyEmailAccessToken}" role="button">Verify email</a>`,
-    }
-
-    transporter.sendMail(message, (err, info) => {
-        if (err) {
-            console.log('Error occurred. ' + err.message);
-            return process.exit(1);
-        }
-    });
-
+    const SendEmailToken = await sendEmailService.sendEmail(values)
     const registerNewUser = await users.create(newRegister);
-    return ({ registerNewUser, verifyEmailAccessToken })
+
+    return ({registerNewUser, SendEmailToken})
 })
 
-const emailVerification = (async (value) => {
-
-    const theUserToken = value.token
-    if (!theUserToken) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid, user not found');
-    }
-    jwt.verify(theUserToken, process.env.TOKEN_CREATE_USER_SECRET, (error, user) => {
-        if (error) throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to authenticate token.');
-        users.update({verified: true},{where: {email: user.email}});
-    })
-
-    return theUserToken
-})
 
 const createLogout = (async (value) => {
     const TherefreshToken = value.refresh_token
@@ -164,6 +121,5 @@ module.exports = {
     deleteUserByPk,
     createLogin,
     createRegister,
-    emailVerification,
     createLogout
 }

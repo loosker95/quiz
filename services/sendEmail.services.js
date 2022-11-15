@@ -4,6 +4,7 @@ const { generateTokenCreateUser } = require('../utils/generateToken')
 const jwt = require('jsonwebtoken');
 const users = require('../models/user.model')
 const emailConfig = require('../utils/emailConfig')
+const ejs = require('ejs')
 
 
 const sendEmail = (async (data) => {
@@ -12,12 +13,15 @@ const sendEmail = (async (data) => {
     const dataToken = { email: data.email }
     const verifyEmailAccessToken = generateTokenCreateUser(dataToken)
 
+
+    const emailTemplate = await ejs.renderFile(__dirname + "./../views/sendEmail.ejs");
+
     let message = {
         from: `${process.env.APP_NAME} ${process.env.APP_EMAIL}`,
         to: `${data.email}`,
         subject: "Email verification",
         text: `Hello From ${process.env.APP_NAME}`,
-        html: `<a class="btn btn-primary" href="${process.env.VERIFY_EMAIL_HOST}/api/v1/auth/verify-email/${verifyEmailAccessToken}" role="button">Verify email</a>`,
+        html: emailTemplate,
     }
 
     emailConfig.sendMail(message, (error, info) => {

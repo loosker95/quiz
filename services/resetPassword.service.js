@@ -6,7 +6,8 @@ const ApiError = require('../utils/ApiError')
 const { generateTokenResetPass } = require('../utils/generateToken')
 const emailConfig = require('../utils/emailConfig')
 const jwt = require('jsonwebtoken')
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs")
+const ejs = require('ejs')
 
 
 const resetPasswd = (async (value) => {
@@ -18,13 +19,14 @@ const resetPasswd = (async (value) => {
     const resetPassToken = { email: email }
     const resetPasswordAccessToken = generateTokenResetPass(resetPassToken)
 
-   
+    const passResetTemplate = await ejs.renderFile(__dirname + "./../views/ResetpassEmail.ejs");
+
     let message = {
         from: `${process.env.APP_NAME} ${process.env.APP_EMAIL}`,
         to: `${email}`,
         subject: "Reset password",
         text: `Hello From ${process.env.APP_NAME}`,
-        html: `<a class="btn btn-primary" href="${process.env.VERIFY_EMAIL_HOST}/api/v1/auth/verify-email/${resetPasswordAccessToken}" role="button">Reset password</a>`,
+        html: passResetTemplate,
     }
 
     emailConfig.sendMail(message, (error, info) => {

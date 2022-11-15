@@ -14,8 +14,13 @@ const generateTokenCreateUser = (email) =>{
     return jwt.sign(email, process.env.TOKEN_CREATE_USER_SECRET, { expiresIn: process.env.CREATE_USER_TOKEN_EXPIRE_TIME })
 }
 
+const generateTokenResetPass = (email) =>{
+    return jwt.sign(email, process.env.TOKEN_RESET_PASSWORD_SECRET, { expiresIn: process.env.RESET_PASSWORD_TOKEN_EXPIRE_TIME })
+}
+
 module.exports = {
     generateToken, 
     generateRefreshToken,
-    generateTokenCreateUser
+    generateTokenCreateUser,
+    generateTokenResetPass
 }

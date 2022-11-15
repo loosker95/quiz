@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 const response = require('../utils/templateResponse')
 const catchAsync = require('../utils/catchAsync')
-const { userService, sendEmailService } = require('../services')
+const { userService, sendEmailService, resetPassword } = require('../services')
 
 
 
@@ -45,6 +45,16 @@ module.exports = {
     verifyEmail: catchAsync(async (req, res) => {
         await sendEmailService.emailVerification(req.params)
         res.send(response(httpStatus.CREATED, 'Email verified successfully'));
+    }),
+
+    resetPass: catchAsync(async (req, res) => {
+        const data = await resetPassword.resetPasswd(req.body)
+        res.send(response(httpStatus.CREATED, 'Link for password reset sent successfully', data));
+    }),
+
+    newPassReset:  catchAsync(async (req, res) => {
+        const data = await resetPassword.newResetPassword(req.params, req.body)
+        res.send(response(httpStatus.CREATED, 'Password have been reset successfully', data));
     }),
 
     logoutUser :  catchAsync(async (req, res) => {

@@ -11,6 +11,9 @@ const { tokenVerify } = require('../../middlewares/auth')
 router.post('/register', validate(userValidation.createRegister), userController.registerUser)
 router.post('/verify-email/:token', userController.verifyEmail)
 
+router.post('/reset-password', userController.resetPass)
+router.post('/new-password/:token', userController.newPassReset)
+
 router.post('/refresh-token', validate(authValidation.createRefreshToken) ,userToken.generateToken);
 
 router.post('/login', validate(userValidation.loginUser), userController.loginUser)

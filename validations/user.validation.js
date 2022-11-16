@@ -59,6 +59,17 @@ const createRegister = {
     }),
 };
 
+const resetPasswd = {
+    body: Joi.object().keys({
+        email: Joi.string().required(),
+    }),
+}
+
+const resetNewPasswd = {
+    body: Joi.object().keys({
+        password: Joi.string().alphanum().min(8).required(),
+    }),
+}
 
 module.exports = {
     createUser,
@@ -66,5 +77,7 @@ module.exports = {
     updateUser,
     deleteUser,
     loginUser,
-    createRegister
+    createRegister,
+    resetPasswd,
+    resetNewPasswd
 };  

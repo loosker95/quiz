@@ -19,7 +19,8 @@ const resetPasswd = (async (value) => {
     const resetPassToken = { email: email }
     const resetPasswordAccessToken = generateTokenResetPass(resetPassToken)
 
-    const passResetTemplate = await ejs.renderFile(__dirname + "./../views/ResetpassEmail.ejs", { name: 'Stranger' });
+    let url = `${process.env.VERIFY_EMAIL_HOST}/api/v1/auth/new-password/${resetPasswordAccessToken}`
+    const passResetTemplate = await ejs.renderFile(__dirname + "./../views/ResetpassEmail.ejs", { email: email , url: url});
 
     let message = {
         from: `${process.env.APP_NAME} ${process.env.APP_EMAIL}`,

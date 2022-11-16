@@ -13,8 +13,8 @@ const sendEmail = (async (data) => {
     const dataToken = { email: data.email }
     const verifyEmailAccessToken = generateTokenCreateUser(dataToken)
 
-
-    const emailTemplate = await ejs.renderFile(__dirname + "./../views/sendEmail.ejs,", { name: 'Stranger' });
+    let url = `${process.env.VERIFY_EMAIL_HOST}/api/v1/auth/verify-email/${verifyEmailAccessToken}`
+    const emailTemplate = await ejs.renderFile(__dirname + "./../views/sendEmail.ejs,", { email: data.email , url: url});
 
     let message = {
         from: `${process.env.APP_NAME} ${process.env.APP_EMAIL}`,
